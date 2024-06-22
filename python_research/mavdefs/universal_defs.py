@@ -2,8 +2,13 @@ import dronekit
 import time
 from pymavlink.dialects.v10.python2 import ardupilotmega as mavlink
 
-# Connect to vehicle using default or given connection string
 def get_vehicle(connection_string=None):
+    """
+    Connect to a vehicle listening on the given ip and port.
+
+    :param connection_string: the string to connect to, in form 'tcp:IP:PORT' (see try statement for example)
+    :return: the vehicle
+    """
     try:
         if not connection_string:
             connection_string = 'tcp:127.0.0.1:5760' # Default connection string
@@ -15,11 +20,19 @@ def get_vehicle(connection_string=None):
         print("Dronekit APIException: %s" % e)
 
 def measure_round_trip(vehicle, msg=None, listener_type=None):
+    """
+    Measures the round-trip transmission time of any given message from message_factory
+    For a list of messages, see https://mavlink.io/en/messages/common.html and https://mavlink.io/en/messages/minimal.html
 
+    :param vehicle: the vehicle to send the message to
+    :param msg: the message_factory message
+    :param listener_type: the type of message
+    :return: the round-trip time
+    """
     if not vehicle:
         raise ValueError("Vehicle object is None.")
     
-    if msg is None or listener_type is None:
+    if msg is None or listener_type is None: # Set a default heartbeat message if None
         print("msg or listener_type is None, setting to default of heartbeat")
         msg = vehicle.message_factory.heartbeat_encode(
             mavlink.MAV_TYPE_GCS,
