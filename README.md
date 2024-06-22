@@ -23,6 +23,9 @@
     `source /path/to/envname/bin/activate`  
 4. (Optional) Leave Virtual Environment  
     `deactivate`  
+
+**Installing Required Packages**  
+    `python2.7 -m pip install dronekit dronekit-sitl`  
 ### Starting the Simulation  
 **Code Execution**  
 Run each command in a different terminal session. Remember to switch each session to the virtual environment if using.  
