@@ -1,4 +1,4 @@
-# Simulation Usage and Notes  
+# Drone Simulation Usage and Notes  
 ### Working Environment  
 **Requirements**  
 - Python2.7 running on a Linux-based machine. This project uses WSL with Ubuntu.  
@@ -37,8 +37,27 @@ Once the simulation is started, the simulated vehicle listens at 127.0.0.1:5760.
     Open Missionplanner and in the top right corner select "tcp", "57600", and press "connect".  
     For host name/ip use: 127.0.0.1  
     For port use: 5760  
+### Using quad_utils in a Script  
+**What is quad_utils?**  
+It's a simple library of wrappers that use dronekit and pymavlink to send commands to a remote vehicle.
 ### Script Notes  
 **Python2.7 Restrictions**  
 Because we have to use python2.7, some import statments in the source code need to be corrected. Specifically, if you encounter a syntax error in the ardupilotmega.py file, you must navigate to the code that references ardupilotmega.py and change the import statement from "from pymavlink.dialects.v10 import ardupilotmega" to "from pymavlink.dialects.v10.python2 import ardupilotmega".  
-Some features of python3 are absent, like formatted print statements using the `print(f'My Var: {var}')` pattern.
+Some features of python3 are absent, like formatted print statements using the `print(f'My Var: {var}')` pattern.  
     
+# Encryption Examples
+### Working Environment
+- Python3.12 running on a Linux-based machine. This project uses WSL with Ubuntu.  
+- For organization, a virtual environment is recommended.  
+- Pip packages: pycryptodome  
+**Setting Up Virtual Environment**  
+1. Install Python3.12 and venv
+    `sudo apt install python3.12 python3.12-venv`
+2. Make Virtual Environment  
+    `python3.12 -m venv envname`  
+3. Switch to Virtual Environment  
+    `source /path/to/envname/bin/activate`  
+4. (Optional) Leave Virtual Environment  
+    `deactivate`  
+**Installing Required Packages**  
+    `pip install pycryptodome`  

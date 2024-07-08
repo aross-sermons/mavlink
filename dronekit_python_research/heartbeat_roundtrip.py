@@ -16,6 +16,7 @@ def measure_heartbeat_roundtrip(vehicle):
 
     start_time = time.time()
 
+
     # Send a heartbeat message using vehicle.message_factory
     heartbeat_msg = vehicle.message_factory.heartbeat_encode(
         type=mavlink.MAV_TYPE_GCS,
