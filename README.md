@@ -32,11 +32,16 @@ Run each command in a different terminal session. Remember to switch each sessio
 Once the simulation is started, the simulated vehicle listens at 127.0.0.1:5760. After port 5760 is connected to, it will listen to 5763, 5766, 5769, and so forth.  
 1. Start Simulation  
     `dronekit-sitl copter --model=quad --home=38.21982,-85.7047507,0,0`  
+    OR
+    `sh start-sitl.sh`  
     This command will start a quad copter simulation at the given coordinates, altitude, and rotation (--home argument).  
 2. (Optional) Connect Missionplanner  
     Open Missionplanner and in the top right corner select "tcp", "57600", and press "connect".  
     For host name/ip use: 127.0.0.1  
     For port use: 5760  
+3. Run Mission Scripts  
+    The directory dronekit_python_research has a default box_mission.py that can be used as an example.  
+    Run this script or your own with `python2.7 scriptname.py` in a virtual environment.  
 ### Using quad_utils in a Script  
 **What is quad_utils?**  
 It's a simple library of wrappers that use dronekit and pymavlink to send commands to a remote vehicle.
