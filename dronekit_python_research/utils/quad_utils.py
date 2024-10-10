@@ -2,7 +2,7 @@ import dronekit
 from pymavlink.dialects.v10.python2 import ardupilotmega as mavlink
 import time
 
-def get_vehicle(connection_string='tcp:127.0.0.1:5760'):
+def get_vehicle(connection_string='tcp:127.0.0.1:5760') -> dronekit.Vehicle:
     """
     Connect to a vehicle listening on the given ip and port.
 
@@ -18,7 +18,7 @@ def get_vehicle(connection_string='tcp:127.0.0.1:5760'):
     except Exception as e:
         print("Error: %s" % e)
 
-def print_mode_mapping(vehicle):
+def print_mode_mapping(vehicle:dronekit.Vehicle):
     """
     
     """
@@ -37,7 +37,7 @@ def print_mode_mapping(vehicle):
     except Exception as e:
         print("Error: %s" % e)
 
-def arm_message_factory(vehicle):
+def arm_message_factory(vehicle:dronekit.Vehicle):
     """
     
     """
@@ -67,7 +67,7 @@ def arm_message_factory(vehicle):
     except Exception as e:
         print("Error: %s" % e)
 
-def disarm_message_factory(vehicle):
+def disarm_message_factory(vehicle:dronekit.Vehicle):
     """
     
     """
@@ -97,7 +97,7 @@ def disarm_message_factory(vehicle):
     except Exception as e:
         print("Error: %s" % e)
 
-def set_mode_message_factory(vehicle, mode='STABILIZE'):
+def set_mode_message_factory(vehicle:dronekit.Vehicle, mode='STABILIZE'):
     """
     
     """
@@ -124,7 +124,7 @@ def set_mode_message_factory(vehicle, mode='STABILIZE'):
     except Exception as e:
         print("Error: %s" % e)
 
-def takeoff_message_factory(vehicle, target_altitude):
+def takeoff_message_factory(vehicle:dronekit.Vehicle, target_altitude:int):
     """
     
     """
@@ -158,7 +158,7 @@ def takeoff_message_factory(vehicle, target_altitude):
     except Exception as e:
         print("Error: %s" % e)
 
-def land_message_factory(vehicle):
+def land_message_factory(vehicle:dronekit.Vehicle):
     """
     
     """
@@ -189,7 +189,7 @@ def land_message_factory(vehicle):
     except Exception as e:
         print("Error: %s" % e)
 
-def move_velocity_message_factory(vehicle, velocity_x, velocity_y, velocity_z, duration=None):
+def move_velocity_message_factory(vehicle:dronekit.Vehicle, velocity_x:int, velocity_y:int, duration:int=None):
     """
     
     """
@@ -204,7 +204,7 @@ def move_velocity_message_factory(vehicle, velocity_x, velocity_y, velocity_z, d
             mavlink.MAV_FRAME_LOCAL_NED, # frame
             0b0000111111000111, # type_mask (only velocities enabled)
             0, 0, 0, # x, y, z positions (not used)
-            velocity_x, velocity_y, velocity_z, # x, y, z velocity in m/s
+            velocity_x, velocity_y, 0, # x, y, z velocity in m/s
             0, 0, 0, # x, y, z acceleration (not used)
             0, 0) # yaw, yaw_rate (not used)
         
@@ -227,3 +227,29 @@ def move_velocity_message_factory(vehicle, velocity_x, velocity_y, velocity_z, d
         print("Dronekit APIException: %s" % e)
     except Exception as e:
         print("Error: %s" % e)
+
+def box_mission_velocity(vehicle:dronekit.Vehicle, velocity_x:int, velocity_y:int, velocity_duration:int, pause_duration:int):
+    """
+    Moves the drone in a box shape in the direction on velocity_x, then velociy_y, 
+    then opposite velocity_x, then opposite velocity_y, for velocity_duration seconds.
+    Pauses for pause_duration seconds between each movement.
+
+    :param vehicle: The vehicle to send commands to.
+    :param velocity_x: The velocity (speed and direction) to move the drone initially.
+    :param velocity_y: The velocity (cpeed and direction) to move the drone initially.
+    :param velocity_duration: The length of time each drone movement will take.
+    :param pause_duration: The length of time between drone movements.
+    """
+    move_velocity_message_factory(vehicle, velocity_x, 0, velocity_duration)
+
+    time.sleep(pause_duration)
+
+    move_velocity_message_factory(vehicle, 0, velocity_y, velocity_duration)
+
+    time.sleep(pause_duration)
+
+    move_velocity_message_factory(vehicle, -(velocity_x), 0, velocity_duration)
+
+    time.sleep(pause_duration)
+
+    move_velocity_message_factory(vehicle, 0, -(velocity_y), velocity_duration)

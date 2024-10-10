@@ -4,7 +4,7 @@ from Crypto.Util.Padding import pad, unpad
 
 def generate_aes_key(key_size:int=32):
     """
-    Returns a generated aes key of key_size.
+    Returns a generated aes key of key_size. Key size must be 16, 24, or 32 bytes.
 
     :param key_size: The size of the aes key to generate.
     :return: The aes key.
@@ -12,25 +12,6 @@ def generate_aes_key(key_size:int=32):
     if key_size not in [16, 24, 32]:
         raise ValueError("Key size must be 16, 24, or 32 bytes.")
     return urandom(key_size)
-
-def write_aes_to_file(filename:str, key:bytes, iv_size:int):
-    """
-    
-    """
-    with open(filename, 'w') as file:
-        file.write(f'{len(key)},{iv_size},{key.hex()}')
-
-def read_aes_from_file(filename:str):
-    """
-    
-    """
-    with open(filename, 'r') as file:
-        data = file.readline().strip()
-
-    key_length, iv_length, key_hex = data.split(',')
-    key_bytes = bytes.fromhex(key_hex)
-
-    return int(key_length), int(iv_length), key_bytes
 
 def encrypt_data(data:bytes, key:bytes, iv_size:int=16) -> bytes:
     """
@@ -55,7 +36,7 @@ def encrypt_data(data:bytes, key:bytes, iv_size:int=16) -> bytes:
 
     return(iv + encrypted_data)
 
-def decrypt_data(encrypted_data: bytes, key: bytes, iv_size:int=16) -> bytes:
+def decrypt_data(encrypted_data:bytes, key:bytes, iv_size:int=16) -> bytes:
     """
     Decrypts the given encrypted_data.
 
