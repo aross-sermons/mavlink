@@ -4,6 +4,7 @@ from utils import encrypt_decrypt_tea as tea
 from codecarbon import EmissionsTracker
 from enum import Enum
 import os
+import time
 
 class Method(Enum):
     AES_16 = 1
@@ -163,16 +164,21 @@ def log_times(methods:list[Method], message:str, repeat:int):
             print(f'Method {method.name}, {i}/{repeat}:')
             # Call the appropriate encryption method
             if method in encryption_methods:
-                # Start emissions tracker, call encrypt_decrypt function, stop emissions tracker
+                # Start emissions tracker and record start time
                 tracker.start()
+                start_time = time.perf_counter()
                 encrypted_message, decrypted_message = encryption_methods[method](message)
+                # Stop emissions tracker and record end time
                 tracker.stop()
+                end_time = time.perf_counter()
+                total_time = end_time - start_time
                 # Print messages
                 print(f'Encrypted Message Preview: {encrypted_message[:10]}')
                 print(f'Decrypted Message Preview: {decrypted_message[:10]}')
                 # Retrieve emissions data and append encryption method name
                 emissions_data_dict = vars(tracker._prepare_emissions_data())
-                emissions_data = ','.join(str(value) for value in emissions_data_dict.values()) + "," + method.name
+                emissions_data = ','.join(str(value) for value in emissions_data_dict.values())
+                emissions_data = emissions_data + "," + method.name + "," + str(total_time)
                 emissions_data_list.append(emissions_data)
                 print("Successfully logged encryption-decryption.")
             else:
@@ -183,7 +189,7 @@ def log_times(methods:list[Method], message:str, repeat:int):
         print("#############################################################################")
         
     # Insert header names into emissions_data_list
-    header_names = list(emissions_data_dict.keys()) + ["method"]
+    header_names = list(emissions_data_dict.keys()) + ["method"] + ["total_time"]
     emissions_data_list.insert(0, ','.join(header_names))
     
     # Find the last log file so a new log file can be created.
